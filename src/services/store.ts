@@ -5,9 +5,11 @@ import {
 } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import ingredientsReducer from '../services/slices/ingredientsSlice';
+import constructorBurgerReducer from '../services/slices/constructorBurgerSlice';
 
 export const rootReducer = combineReducers({
-  ingredients: ingredientsReducer
+  ingredients: ingredientsReducer,
+  constructorBurger: constructorBurgerReducer
 });
 
 export const store = configureStore({
