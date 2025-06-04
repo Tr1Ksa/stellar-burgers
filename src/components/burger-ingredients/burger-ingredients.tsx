@@ -1,32 +1,34 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
-
-import { TTabMode } from '@utils-types';
+import { TTabMode, TIngredient } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useDispatch, useSelector } from '../../services/store';
+import {
+  fetchIngredients,
+  selectIngredients,
+  selectIngredientsLoading
+} from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const buns = [];
-  const mains = [];
-  const sauces = [];
+  const dispatch = useDispatch();
+  const ingredients = useSelector(selectIngredients);
+  const isLoading = useSelector(selectIngredientsLoading);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
 
-  const [bunsRef, inViewBuns] = useInView({
-    threshold: 0
-  });
+  const [bunsRef, inViewBuns] = useInView({ threshold: 0.1 });
+  const [mainsRef, inViewFilling] = useInView({ threshold: 0.1 });
+  const [saucesRef, inViewSauces] = useInView({ threshold: 0.1 });
 
-  const [mainsRef, inViewFilling] = useInView({
-    threshold: 0
-  });
+  // Загрузка ингредиентов при монтировании
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
-  const [saucesRef, inViewSauces] = useInView({
-    threshold: 0
-  });
-
+  // Обновление текущей вкладки при скролле
   useEffect(() => {
     if (inViewBuns) {
       setCurrentTab('bun');
@@ -37,17 +39,42 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
+  // Фильтрация ингредиентов по категориям
+  const buns = ingredients.filter((item: TIngredient) => item.type === 'bun');
+  const mains = ingredients.filter((item: TIngredient) => item.type === 'main');
+  const sauces = ingredients.filter(
+    (item: TIngredient) => item.type === 'sauce'
+  );
+
+  // Обработчик клика по табу
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
-    if (tab === 'bun')
-      titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'main')
-      titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'sauce')
-      titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const refs = {
+      bun: titleBunRef,
+      main: titleMainRef,
+      sauce: titleSaucesRef
+    };
+    refs[tab as TTabMode]?.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
-  return null;
+  if (isLoading) {
+    return (
+      <p className='text text_type_main-medium mt-10'>
+        Загрузка ингредиентов...
+      </p>
+    );
+  }
+
+  if (!ingredients.length) {
+    return (
+      <p className='text text_type_main-medium mt-10'>
+        Не удалось загрузить ингредиенты
+      </p>
+    );
+  }
 
   return (
     <BurgerIngredientsUI
