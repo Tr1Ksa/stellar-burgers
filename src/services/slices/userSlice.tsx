@@ -1,4 +1,4 @@
-/* import {
+import {
   TLoginData,
   TRegisterData,
   getUserApi,
@@ -153,4 +153,3 @@ export const {
 export const { init, setErrorText, removeErrorText } = userSlice.actions;
 
 export default userSlice.reducer;
- */

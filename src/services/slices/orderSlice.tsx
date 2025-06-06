@@ -1,9 +1,7 @@
-// src/services/slices/orderSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { orderBurgerApi } from '@api'; // Предположим, что такой API уже существует
+import { orderBurgerApi } from '@api';
 import { TOrder } from '@utils-types';
 
-// Типы для состояния
 export type OrderState = {
   orderRequest: boolean;
   orderModalData: TOrder | null;
@@ -16,20 +14,18 @@ const initialState: OrderState = {
   error: null
 };
 
-// Асинхронный thunk для создания заказа
 export const postOrder = createAsyncThunk<TOrder, string[]>(
   'order/postOrder',
   async (ingredientIds: string[], { rejectWithValue }) => {
     try {
       const response = await orderBurgerApi(ingredientIds);
-      return response.order; // предположим, что ответ содержит объект order
+      return response.order;
     } catch (error) {
       return rejectWithValue('Ошибка при создании заказа');
     }
   }
 );
 
-// Создаем слайс
 const orderSlice = createSlice({
   name: 'order',
   initialState,
@@ -60,7 +56,6 @@ const orderSlice = createSlice({
   }
 });
 
-// Экспортируем экшены и селекторы
 export const { closeOrderModal } = orderSlice.actions;
 export const { selectOrderRequest, selectOrderModalData, selectOrderError } =
   orderSlice.selectors;
