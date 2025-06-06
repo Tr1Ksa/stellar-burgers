@@ -24,7 +24,6 @@ import { OrderInfo } from '../order-info';
 import { ProtectedRoute } from '../protected-route/protected-route';
 import { useSelector } from 'react-redux';
 
-// Modal wrapper component
 const ModalWrapper = ({ children }: { children: JSX.Element }) => (
   <Modal onClose={() => window.history.back()} title='Детали ингредиента'>
     {children}

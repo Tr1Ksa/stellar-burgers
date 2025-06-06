@@ -21,12 +21,12 @@ type TInitialState = {
 };
 
 export const fetchLoginUser = createAsyncThunk(
-  `${USER_SLICE}/login'`,
+  `${USER_SLICE}/login`,
   async (data: TLoginData) => loginUserApi(data)
 );
 
 export const fetchRegisterUser = createAsyncThunk(
-  `${USER_SLICE}/register'`,
+  `${USER_SLICE}/register`,
   async (data: TRegisterData) => registerUserApi(data)
 );
 
@@ -87,6 +87,12 @@ const userSlice = createSlice({
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.user = action.payload.user;
+        setCookie(
+          'accessToken',
+          action.payload.accessToken.split('Bearer ')[1]
+        );
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(fetchRegisterUser.pending, (state) => {
         state.loading = true;
@@ -98,6 +104,12 @@ const userSlice = createSlice({
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
+        state.user = action.payload.user;
+        setCookie(
+          'accessToken',
+          action.payload.accessToken.split('Bearer ')[1]
+        );
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(getUserThunk.pending, (state) => {
         state.loading = true;
@@ -106,11 +118,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = false;
         state.user = { name: '', email: '' };
+        deleteCookie('accessToken');
+        localStorage.removeItem('refreshToken');
       })
       .addCase(getUserThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user.name = action.payload.user.name;
-        state.user.email = action.payload.user.email;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(fetchLogout.pending, (state) => {
@@ -124,6 +137,8 @@ const userSlice = createSlice({
         if (action.payload.success) {
           state.user = { name: '', email: '' };
           state.isAuthenticated = false;
+          deleteCookie('accessToken');
+          localStorage.removeItem('refreshToken');
         }
       })
       .addCase(fetchUpdateUser.pending, (state) => {
@@ -135,8 +150,7 @@ const userSlice = createSlice({
       .addCase(fetchUpdateUser.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload.success) {
-          state.user.name = action.payload.user.name;
-          state.user.email = action.payload.user.email;
+          state.user = action.payload.user;
         }
       });
   }
