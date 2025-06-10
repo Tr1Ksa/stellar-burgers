@@ -14,10 +14,7 @@ import {
   selectOrderModalData,
   selectOrderRequest
 } from '../../services/slices/orderSlice';
-import {
-  selectConstructorItems,
-  clearConstructor
-} from '../../services/slices/constructorBurgerSlice';
+import { selectConstructorItems } from '../../services/slices/constructorBurgerSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();

@@ -10,20 +10,12 @@ import {
   NotFound404
 } from '@pages';
 import React, { useEffect } from 'react';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AppHeader } from '../app-header';
 import { IngredientDetails } from '../ingredient-details';
 import { Modal } from '../modal';
 import { OrderInfo } from '../order-info';
 import { ProtectedRoute } from '../protected-route/protected-route';
-import { useSelector } from 'react-redux';
 import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { closeOrderModal } from '../../services/slices/orderSlice';
@@ -39,15 +31,12 @@ export const App = () => {
 
   const handleModalClose = () => {
     navigate(-1);
-    if (/\/(feed|profile\/orders)\/\d+/.test(location.pathname)) {
-      dispatch(closeOrderModal());
-    }
+    dispatch(closeOrderModal());
   };
 
   const getModalTitle = (path: string) => {
-    if (/\/ingredients\/\d+/.test(path)) return 'Детали ингредиента';
-    if (/\/(feed|profile\/orders)\/\d+/.test(path)) return 'Детали заказа';
-    return '';
+    const orderNumber = path.match(/\d+$/)?.[0];
+    return `#${orderNumber}`;
   };
 
   return (
@@ -57,14 +46,10 @@ export const App = () => {
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
 
-        {/* Модальные окна */}
         <Route
           path='/ingredients/:id'
           element={
-            <Modal
-              title={getModalTitle(location.pathname)}
-              onClose={handleModalClose}
-            >
+            <Modal title={'Детали ингредиента'} onClose={handleModalClose}>
               <IngredientDetails />
             </Modal>
           }
@@ -91,8 +76,6 @@ export const App = () => {
             </Modal>
           }
         />
-
-        {/* Основные страницы */}
         <Route
           path='/login'
           element={
