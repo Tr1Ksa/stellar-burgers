@@ -49,7 +49,6 @@ const constructorBurgerSlice = createSlice({
   },
   selectors: {
     selectConstructorItems: (state) => state,
-    selectConstructorBun: (state) => state.bun,
     selectConstructorIngredients: (state) => state.ingredients
   }
 });
@@ -62,10 +61,7 @@ export const {
   clearConstructor
 } = constructorBurgerSlice.actions;
 
-export const {
-  selectConstructorItems,
-  selectConstructorBun,
-  selectConstructorIngredients
-} = constructorBurgerSlice.selectors;
+export const { selectConstructorItems, selectConstructorIngredients } =
+  constructorBurgerSlice.selectors;
 
 export default constructorBurgerSlice.reducer;

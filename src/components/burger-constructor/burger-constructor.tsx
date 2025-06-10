@@ -5,9 +5,12 @@ import { TConstructorIngredient } from '@utils-types';
 import { useNavigate } from 'react-router-dom';
 import { selectIsAuthenticated } from '../../services/slices/userSlice';
 import { useDispatch } from '../../services/store';
-import { closeOrderModal as closeOrderModalAction } from '../../services/slices/orderSlice';
 import {
-  postOrder,
+  closeOrderModal as closeOrderModalAction,
+  fetchOrders
+} from '../../services/slices/orderSlice';
+import {
+  createOrder,
   selectOrderModalData,
   selectOrderRequest
 } from '../../services/slices/orderSlice';
@@ -39,10 +42,10 @@ export const BurgerConstructor: FC = () => {
         constructorItems.bun._id
       ];
 
-      const resultAction = await dispatch(postOrder(ingredientsIds));
+      const resultAction = await dispatch(createOrder(ingredientsIds));
 
-      if (postOrder.fulfilled.match(resultAction)) {
-        dispatch(clearConstructor());
+      if (createOrder.fulfilled.match(resultAction)) {
+        dispatch(fetchOrders());
       }
     } catch (error) {
       console.error('Ошибка при оформлении заказа:', error);

@@ -10,7 +10,6 @@ import {
 } from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useDispatch();
   const ingredients = useSelector(selectIngredients);
   const isLoading = useSelector(selectIngredientsLoading);
 
@@ -23,12 +22,6 @@ export const BurgerIngredients: FC = () => {
   const [mainsRef, inViewFilling] = useInView({ threshold: 0.1 });
   const [saucesRef, inViewSauces] = useInView({ threshold: 0.1 });
 
-  // Загрузка ингредиентов при монтировании
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
-  // Обновление текущей вкладки при скролле
   useEffect(() => {
     if (inViewBuns) {
       setCurrentTab('bun');
@@ -39,14 +32,12 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
-  // Фильтрация ингредиентов по категориям
   const buns = ingredients.filter((item: TIngredient) => item.type === 'bun');
   const mains = ingredients.filter((item: TIngredient) => item.type === 'main');
   const sauces = ingredients.filter(
     (item: TIngredient) => item.type === 'sauce'
   );
 
-  // Обработчик клика по табу
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
     const refs = {

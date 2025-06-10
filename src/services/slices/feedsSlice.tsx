@@ -6,6 +6,7 @@ import {
   createSlice
 } from '@reduxjs/toolkit';
 import { TOrder, TOrdersData } from '@utils-types';
+import { FEEDS_SLICE_NAME } from './sliceNames';
 
 type TFeedsState = {
   isLoading: boolean;
@@ -23,13 +24,21 @@ export const initialState: TFeedsState = {
   }
 };
 
-export const fetchFeeds = createAsyncThunk<TOrdersData>(
-  'feeds/fetch',
-  async () => await getFeedsApi()
-);
+export const fetchFeeds = createAsyncThunk<
+  TOrdersData,
+  void,
+  { rejectValue: string }
+>(`${FEEDS_SLICE_NAME}/fetch`, async (_, { rejectWithValue }) => {
+  try {
+    const data = await getFeedsApi();
+    return data;
+  } catch (error) {
+    return rejectWithValue('Ошибка загрузки ленты заказов');
+  }
+});
 
 const feedsSlice = createSlice({
-  name: 'feeds',
+  name: FEEDS_SLICE_NAME,
   initialState,
   reducers: {},
 
@@ -49,25 +58,15 @@ const feedsSlice = createSlice({
       });
   },
   selectors: {
-    // Получение всех данных ленты заказов
-    selectFeeds: (state) => state.data,
-    // Получение статуса загрузки
     selectFeedsLoading: (state) => state.isLoading,
-    // Получение ошибки (если есть)
-    selectFeedsError: (state) => state.error,
-    // Получение списка заказов
     selectOrders: (state) => state.data.orders,
-    // Получение общего количества заказов
     selectTotal: (state) => state.data.total,
-    // Получение количества заказов за сегодня
     selectTotalToday: (state) => state.data.totalToday
   }
 });
 
 export const {
-  selectFeeds,
   selectFeedsLoading,
-  selectFeedsError,
   selectOrders,
   selectTotal,
   selectTotalToday

@@ -15,10 +15,18 @@ const initialState: TIngredientsState = {
   error: null
 };
 
-export const fetchIngredients = createAsyncThunk(
-  `${INGRIDIENTS_SLICE_NAME}/fetch`,
-  async () => await getIngredientsApi()
-);
+export const fetchIngredients = createAsyncThunk<
+  TIngredient[],
+  void,
+  { rejectValue: string }
+>(`${INGRIDIENTS_SLICE_NAME}/fetch`, async (_, { rejectWithValue }) => {
+  try {
+    const data = await getIngredientsApi();
+    return data;
+  } catch (error) {
+    return rejectWithValue('Ошибка загрузки ингредиентов');
+  }
+});
 
 const ingredientsSlice = createSlice({
   name: INGRIDIENTS_SLICE_NAME,
@@ -40,24 +48,12 @@ const ingredientsSlice = createSlice({
       });
   },
   selectors: {
-    // Селектор для получения всех ингредиентов
     selectIngredients: (state) => state.data,
-    // Селектор для получения статуса загрузки
-    selectIngredientsLoading: (state) => state.isLoading,
-    // Селектор для получения ошибки
-    selectIngredientsError: (state) => state.error,
-    // Селектор для получения ингредиентов по типу
-    selectIngredientsByType: (state) => (type: string) =>
-      state.data.filter((ingredient) => ingredient.type === type)
+    selectIngredientsLoading: (state) => state.isLoading
   }
 });
 
-// Экспортируем селекторы напрямую
-export const {
-  selectIngredients,
-  selectIngredientsLoading,
-  selectIngredientsError,
-  selectIngredientsByType
-} = ingredientsSlice.selectors;
+export const { selectIngredients, selectIngredientsLoading } =
+  ingredientsSlice.selectors;
 
 export default ingredientsSlice.reducer;

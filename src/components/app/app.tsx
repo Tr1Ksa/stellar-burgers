@@ -9,13 +9,14 @@ import {
   ProfileOrders,
   NotFound404
 } from '@pages';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
-  NavLink
+  useLocation,
+  useNavigate
 } from 'react-router-dom';
 import { AppHeader } from '../app-header';
 import { IngredientDetails } from '../ingredient-details';
@@ -23,38 +24,75 @@ import { Modal } from '../modal';
 import { OrderInfo } from '../order-info';
 import { ProtectedRoute } from '../protected-route/protected-route';
 import { useSelector } from 'react-redux';
+import { useDispatch } from '../../services/store';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { closeOrderModal } from '../../services/slices/orderSlice';
 
-const ModalWrapper = ({ children }: { children: JSX.Element }) => (
-  <Modal onClose={() => window.history.back()} title='Детали ингредиента'>
-    {children}
-  </Modal>
-);
+export const App = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-export const App = () => (
-  <BrowserRouter>
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+
+  const handleModalClose = () => {
+    navigate(-1);
+    if (/\/(feed|profile\/orders)\/\d+/.test(location.pathname)) {
+      dispatch(closeOrderModal());
+    }
+  };
+
+  const getModalTitle = (path: string) => {
+    if (/\/ingredients\/\d+/.test(path)) return 'Детали ингредиента';
+    if (/\/(feed|profile\/orders)\/\d+/.test(path)) return 'Детали заказа';
+    return '';
+  };
+
+  return (
     <div className='app'>
       <AppHeader />
-      <Routes>
+      <Routes location={location.state?.backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
 
-        <Route
-          path='/feed/:number'
-          element={
-            <ModalWrapper>
-              <OrderInfo />
-            </ModalWrapper>
-          }
-        />
+        {/* Модальные окна */}
         <Route
           path='/ingredients/:id'
           element={
-            <ModalWrapper>
+            <Modal
+              title={getModalTitle(location.pathname)}
+              onClose={handleModalClose}
+            >
               <IngredientDetails />
-            </ModalWrapper>
+            </Modal>
+          }
+        />
+        <Route
+          path='/feed/:number'
+          element={
+            <Modal
+              title={getModalTitle(location.pathname)}
+              onClose={handleModalClose}
+            >
+              <OrderInfo />
+            </Modal>
+          }
+        />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <Modal
+              title={getModalTitle(location.pathname)}
+              onClose={handleModalClose}
+            >
+              <OrderInfo />
+            </Modal>
           }
         />
 
+        {/* Основные страницы */}
         <Route
           path='/login'
           element={
@@ -87,6 +125,7 @@ export const App = () => (
             </ProtectedRoute>
           }
         />
+
         <Route
           path='/profile'
           element={
@@ -103,21 +142,9 @@ export const App = () => (
             </ProtectedRoute>
           }
         />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <ProtectedRoute>
-              <ModalWrapper>
-                <OrderInfo />
-              </ModalWrapper>
-            </ProtectedRoute>
-          }
-        />
 
         <Route path='*' element={<NotFound404 />} />
       </Routes>
     </div>
-  </BrowserRouter>
-);
-
-export default App;
+  );
+};

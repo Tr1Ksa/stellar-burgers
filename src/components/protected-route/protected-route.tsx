@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { selectIsAuthenticated } from '../../services/slices/userSlice';
 import { useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -24,5 +25,5 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
     return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
