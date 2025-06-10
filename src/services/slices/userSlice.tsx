@@ -96,16 +96,15 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
-export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
-  `${USER_SLICE}/update`,
-  async (data, { rejectWithValue }) => {
-    const response = await updateUserApi(data);
-
-    if (!response?.success) {
-      return rejectWithValue(response);
+export const updateUser = createAsyncThunk(
+  `${USER_SLICE}/updateUser`,
+  async (userData: Partial<TRegisterData>, { rejectWithValue }) => {
+    try {
+      const response = await updateUserApi(userData);
+      return response.user;
+    } catch (error) {
+      return rejectWithValue('Не удалось обновить данные пользователя');
     }
-
-    return response.user;
   }
 );
 
@@ -180,9 +179,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.data = action.payload;
       })
-      .addCase(updateUser.rejected, (state) => {
-        state.isLoading = false;
-        state.errorText = 'Ошибка при обновлении данных';
+      .addCase(updateUser.rejected, (state, action) => {
+        state.errorText = action.payload as string;
       });
   }
 });
@@ -194,7 +192,6 @@ export {
   logout as fetchLogout
 };
 
-// Селекторы
 export const selectUser = (state: { user: TUserState }) => state.user.data;
 export const selectIsAuthenticated = (state: { user: TUserState }) =>
   state.user.isAuthenticated;
