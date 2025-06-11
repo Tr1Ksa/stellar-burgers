@@ -24,6 +24,7 @@ export const App = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const state = location.state as { background?: Location };
 
   useEffect(() => {
     dispatch(fetchIngredients());
@@ -42,40 +43,11 @@ export const App = () => {
   return (
     <div className='app'>
       <AppHeader />
-      <Routes location={location.state?.backgroundLocation || location}>
+      <Routes location={state?.background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title={'Детали ингредиента'} onClose={handleModalClose}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal
-              title={getModalTitle(location.pathname)}
-              onClose={handleModalClose}
-            >
-              <OrderInfo />
-            </Modal>
-          }
-        />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <Modal
-              title={getModalTitle(location.pathname)}
-              onClose={handleModalClose}
-            >
-              <OrderInfo />
-            </Modal>
-          }
-        />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route
           path='/login'
           element={
@@ -108,7 +80,6 @@ export const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/profile'
           element={
@@ -125,9 +96,50 @@ export const App = () => {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfo />
+            </ProtectedRoute>
+          }
+        />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
+      {state?.background && (
+        <Routes>
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title={'Детали ингредиента'} onClose={handleModalClose}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal
+                title={getModalTitle(location.pathname)}
+                onClose={handleModalClose}
+              >
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <Modal
+                title={getModalTitle(location.pathname)}
+                onClose={handleModalClose}
+              >
+                <OrderInfo />
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };
