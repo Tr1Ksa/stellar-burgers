@@ -1,8 +1,11 @@
 import { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { selectIsAuthenticated } from '../../services/slices/userSlice';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import {
+  selectIsAuthenticated,
+  selectIsAuthChecked
+} from '../../services/slices/userSlice';
+import { useSelector } from '../../services/store';
+import { Preloader } from '@ui';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -14,7 +17,12 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
   children
 }) => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
   const location = useLocation();
+
+  if (!isAuthChecked) {
+    return <Preloader />;
+  }
 
   if (onlyUnAuth && isAuthenticated) {
     const from = location.state?.from || '/';
@@ -25,5 +33,5 @@ export const ProtectedRoute: FC<ProtectedRouteProps> = ({
     return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
-  return <>{children}</>;
+  return children;
 };

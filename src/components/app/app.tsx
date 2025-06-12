@@ -19,6 +19,7 @@ import { ProtectedRoute } from '../protected-route/protected-route';
 import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { closeOrderModal } from '../../services/slices/orderSlice';
+import { fetchCheckUserAuth } from '../../services/slices/userSlice';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export const App = () => {
   const state = location.state as { background?: Location };
 
   useEffect(() => {
+    dispatch(fetchCheckUserAuth());
     dispatch(fetchIngredients());
   }, [dispatch]);
 
