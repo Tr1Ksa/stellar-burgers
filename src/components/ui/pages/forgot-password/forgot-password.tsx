@@ -4,6 +4,7 @@ import { Input, Button } from '@zlden/react-developer-burger-ui-components';
 import styles from '../common.module.css';
 import { Link } from 'react-router-dom';
 import { PageUIProps } from '../common-type';
+import { autoCompleteValues } from '../../../../constants/autoCompleteConstants';
 
 export const ForgotPasswordUI: FC<PageUIProps> = ({
   errorText,
@@ -26,6 +27,7 @@ export const ForgotPasswordUI: FC<PageUIProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             name='email'
+            autoComplete={autoCompleteValues.email}
             error={false}
             errorText=''
             size='default'

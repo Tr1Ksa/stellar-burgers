@@ -7,6 +7,7 @@ import {
 import styles from '../common.module.css';
 import { Link } from 'react-router-dom';
 import { RegisterUIProps } from './type';
+import { autoCompleteValues } from '../../../../constants/autoCompleteConstants';
 
 export const RegisterUI: FC<RegisterUIProps> = ({
   errorText,
@@ -34,6 +35,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setUserName(e.target.value)}
               value={userName}
               name='name'
+              autoComplete={autoCompleteValues.name}
               error={false}
               errorText=''
               size='default'
@@ -46,6 +48,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               name={'email'}
+              autoComplete={autoCompleteValues.email}
               error={false}
               errorText=''
               size={'default'}
@@ -56,6 +59,7 @@ export const RegisterUI: FC<RegisterUIProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               name='password'
+              autoComplete={autoCompleteValues.newPassword}
             />
           </div>
           <div className={`pb-6 ${styles.button}`}>

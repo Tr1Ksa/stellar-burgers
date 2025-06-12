@@ -7,6 +7,7 @@ import {
 import styles from '../common.module.css';
 import { Link } from 'react-router-dom';
 import { ResetPasswordUIProps } from './type';
+import { autoCompleteValues } from '../../../../constants/autoCompleteConstants';
 
 export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
   errorText,
@@ -29,6 +30,7 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             name='password'
+            autoComplete={autoCompleteValues.newPassword}
           />
         </div>
         <div className='pb-6'>
@@ -38,6 +40,7 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
             onChange={(e) => setToken(e.target.value)}
             value={token}
             name='token'
+            autoComplete={autoCompleteValues.token}
             error={false}
             errorText=''
             size='default'

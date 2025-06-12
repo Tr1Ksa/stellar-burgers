@@ -6,6 +6,7 @@ import commonStyles from '../common.module.css';
 
 import { ProfileUIProps } from './type';
 import { ProfileMenu } from '@components';
+import { autoCompleteValues } from '../../../../constants/autoCompleteConstants';
 
 export const ProfileUI: FC<ProfileUIProps> = ({
   formValue,
@@ -31,6 +32,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             onChange={handleInputChange}
             value={formValue.name}
             name={'name'}
+            autoComplete={autoCompleteValues.name}
             error={false}
             errorText={''}
             size={'default'}
@@ -44,6 +46,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             onChange={handleInputChange}
             value={formValue.email}
             name={'email'}
+            autoComplete={autoCompleteValues.email}
             error={false}
             errorText={''}
             size={'default'}
@@ -57,6 +60,7 @@ export const ProfileUI: FC<ProfileUIProps> = ({
             onChange={handleInputChange}
             value={formValue.password}
             name={'password'}
+            autoComplete={autoCompleteValues.password}
             error={false}
             errorText={''}
             size={'default'}
