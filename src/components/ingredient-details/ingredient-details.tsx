@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 import { selectIngredients } from '../../services/slices/ingredientsSlice';
 import { Preloader } from '../ui/preloader/preloader';
 import { FC } from 'react';

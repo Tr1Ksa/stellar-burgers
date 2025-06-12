@@ -1,5 +1,5 @@
 import React, { FC, memo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../services/store';
 import {
   addBun,
   addIngredient
