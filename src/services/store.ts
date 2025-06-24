@@ -8,7 +8,7 @@ import ingredientsReducer from '../services/slices/ingredientsSlice';
 import constructorBurgerReducer from '../services/slices/constructorBurgerSlice';
 import userSlice from './slices/userSlice';
 import feedsSlice from './slices/feedsSlice';
-import orderSlice from './slices/orderSlice';
+import { orderSlice } from './slices/orderSlice';
 import { orderMiddleware } from './slices/middlewares/orderMiddleware';
 
 export const rootReducer = combineReducers({
@@ -16,7 +16,7 @@ export const rootReducer = combineReducers({
   constructorBurger: constructorBurgerReducer,
   feeds: feedsSlice,
   user: userSlice,
-  order: orderSlice
+  order: orderSlice.reducer
 });
 
 export const store = configureStore({

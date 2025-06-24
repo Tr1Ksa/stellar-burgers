@@ -125,4 +125,5 @@ export const { closeOrderModal, resetOrderError } = orderSlice.actions;
 export const { selectOrderRequest, selectOrderModalData, selectOrderLoading } =
   orderSlice.selectors;
 
-export default orderSlice.reducer;
+const orderReducer = orderSlice.reducer;
+export { orderSlice, orderReducer };
