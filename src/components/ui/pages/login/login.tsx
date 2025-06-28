@@ -32,6 +32,8 @@ export const LoginUI: FC<LoginUIProps> = ({
             value={email}
             name='email'
             autoComplete={autoCompleteValues.email}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           />
         </div>
         <div className='pb-6'>
